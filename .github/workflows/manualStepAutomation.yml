@@ -1,0 +1,55 @@
+name: Manual Step Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      input1:
+        description: 'Please Enter The Release Name'
+        required: true
+        type: string
+      input2:
+        description: 'Select The Org'
+        required: true
+        default: 'Twgqa2d'
+        type: choice
+        options:
+          - Prod
+          - Twgqa2d
+      input3:
+        description: 'Confirm your choice (Y/N)'
+        required: true
+        default: 'N'
+        type: choice
+        options:
+          - Y
+          - N
+jobs:
+  manualStepAutomation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/manual-steps-automationV1.0/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./manual-steps-automationV1.0/requirements.txt
+
+      - name: Run Python script
+        run: |
+          python manual-steps-automationV1.0/mainGA.py "${{inputs.input1}}" "${{inputs.input2}}" "${{inputs.input3}}"
+    
