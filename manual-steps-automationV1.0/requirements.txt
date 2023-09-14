@@ -1,2 +1,0 @@
-simple-salesforce==1.12.4
-pandas
