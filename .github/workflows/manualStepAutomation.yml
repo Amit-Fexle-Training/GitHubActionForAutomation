@@ -51,5 +51,5 @@ jobs:
 
       - name: Run Python script
         run: |
-          python manual-steps-automationV1.0/mainGA.py "${{inputs.input1}}" "${{inputs.input2}}" "${{inputs.input3}}"
+          python mainGA.py "${{inputs.input1}}" "${{inputs.input2}}" "${{inputs.input3}}"
     
