@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       input2:
-        description: |
+        description: >
                       Select The Org :
                       1. Prod
                       2. Twgqa2d
