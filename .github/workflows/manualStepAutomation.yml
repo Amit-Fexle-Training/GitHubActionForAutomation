@@ -9,9 +9,9 @@ on:
         type: string
       input2:
         description: >
-                      Select The Org :
-                      1. Prod
-                      2. Twgqa2d
+                      'Select The Org :' >
+                      '1. Prod' >
+                      '2. Twgqa2d'
         required: true
         type: choice
         options:
