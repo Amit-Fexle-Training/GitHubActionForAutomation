@@ -54,4 +54,11 @@ jobs:
       - name: Run Python script
         run: |
           python mainGA.py "${{inputs.input1}}" "${{inputs.input2}}" "${{inputs.input3}}"
+
+      - name: Commit and push changes
+        run: |
+          releaseName="${{ github.event.inputs.input1 }}_results/"
+          git add $releaseName  # Useing the releaseName as part of the path
+          git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
+          git push
     
