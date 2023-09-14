@@ -55,6 +55,13 @@ jobs:
         run: |
           python mainGA.py "${{inputs.input1}}" "${{inputs.input2}}" "${{inputs.input3}}"
 
+      - name: Configure Git with PAT
+        run: |
+          git config --global user.email "amit.kumar@fexle.com"
+          git config --global user.name "Amit-Fexle-Training"
+        env:
+          PAT: ${{ secrets.REPO_PAT_SECRET }}
+    
       - name: Commit and push changes
         run: |
           releaseName="${{ github.event.inputs.input1 }}_results/"
