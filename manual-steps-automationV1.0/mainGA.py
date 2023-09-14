@@ -15,7 +15,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 config = configparser.ConfigParser()
 
 # Read options from the CSV file into a DataFrame
-options_df = pd.read_csv('Org Configs.csv')
+options_df = pd.read_csv('manual-steps-automationV1.0/Org Configs.csv')
 
 # Create a dictionary from the DataFrame
 options = options_df.set_index('orgName')['configFileName'].to_dict()
