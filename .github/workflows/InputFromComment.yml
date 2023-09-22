@@ -50,3 +50,45 @@ jobs:
         run: |
           echo "Second Word: '${{ steps.alpha_check.outputs.second_word }}'"
           echo "Third Word: '${{ steps.alpha_check.outputs.third_word }}'"
+
+      - name: Set up Python
+        if: steps.alpha_check.outputs.alpha_found == 'true'
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Cache Python dependencies
+        if: steps.alpha_check.outputs.alpha_found == 'true'
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      - name: Install Python dependencies
+        if: steps.alpha_check.outputs.alpha_found == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+
+      - name: Run Python script
+        if: steps.alpha_check.outputs.alpha_found == 'true'
+        run: |
+          python mainGA.py "${{ steps.alpha_check.outputs.second_word }}" "{{ steps.alpha_check.outputs.third_word }}" "Y"
+
+      - name: Configure Git with PAT
+        if: steps.alpha_check.outputs.alpha_found == 'true'
+        run: |
+          git config --global user.email "amit.kumar@fexle.com"
+          git config --global user.name "Amit-Fexle-Training"
+        env:
+          PAT: ${{ secrets.REPO_PAT_SECRET }}
+    
+      - name: Commit and push changes
+        if: steps.alpha_check.outputs.alpha_found == 'true'
+        run: |
+          releaseName="${{ github.event.inputs.input1 }}_results/"
+          git add "$releaseName"  # Useing the releaseName as part of the path
+          git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
+          git push
