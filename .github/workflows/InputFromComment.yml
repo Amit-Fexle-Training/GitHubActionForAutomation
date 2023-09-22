@@ -17,26 +17,21 @@ jobs:
         id: latest_commit
         run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
 
-      - name: Set Boolean Variable if "alpha" is present
-        id: set_boolean
+      - name: Extract Orgname and Release
+        id: extract_data
         run: |
           specific_word="alpha"
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
-          if [[ $latest_commit_message == *"$specific_word"* ]]; then
-            echo "::set-output name=found_alpha::true"
-          else
-            echo "::set-output name=found_alpha::false"
-          fi
 
-      - name: Extract Orgname and Release
-        if: steps.set_boolean.outputs.found_alpha == 'true'
-        id: extract_data
-        run: |
-          latest_commit_message="${{ steps.latest_commit.outputs.message }}"
-          # Extract Orgname and Release using regular expressions
-          if [[ $latest_commit_message =~ ([A-Za-z]+) ([A-Za-z0-9]+) ]]; then
-            orgname="${BASH_REMATCH[1]}"
-            release="${BASH_REMATCH[2]}"
-            echo "Orgname: $orgname"
-            echo "Release: $release"
+          if [[ $latest_commit_message == *"$specific_word"* ]]; then
+            # Extract Orgname and Release using regular expressions
+            if [[ $latest_commit_message =~ ([A-Za-z]+) ([A-Za-z0-9]+) ]]; then
+              orgname="${BASH_REMATCH[1]}"
+              release="${BASH_REMATCH[2]}"
+              echo "Orgname: $orgname"
+              echo "Release: $release"
+            fi
+          else
+            echo "The specific word '$specific_word' was not found in the latest commit message."
+            # You can add additional actions or notifications here.
           fi
