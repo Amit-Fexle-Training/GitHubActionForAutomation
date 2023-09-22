@@ -27,8 +27,8 @@ jobs:
             IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
 
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
-            second_word="${commit_message_words[1]}"
-            third_word="${commit_message_words[2]}"
+              second_word="${commit_message_words[1]}"
+              third_word="${commit_message_words[2]}"
           else
             echo "::set-output name=alpha_found::false"
           fi
