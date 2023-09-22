@@ -26,7 +26,7 @@ jobs:
           
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
             echo "Found the specific word '$specific_word' in the latest commit message."
-            echo "##vso[task.setvariable variable=alpha_found]true"
+            export alpha_found="true"
             
             # Split the commit message into words
             IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
@@ -38,7 +38,7 @@ jobs:
             fi
           else
             echo "The specific word '$specific_word' was not found in the latest commit message."
-            echo "##vso[task.setvariable variable=alpha_found]false"
+            export alpha_found="false"
           fi
 
       - name: Print 2nd and 3rd Words
