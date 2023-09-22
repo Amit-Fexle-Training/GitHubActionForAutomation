@@ -1,0 +1,25 @@
+name: Input From Comment
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get org name from comment
+        if: ${{ contains(github.event.comment.body, 'release') }}
+        run: echo "::set-output name=org-name::${{ github.event.comment.body | split(' ') | nth(1) }}"
+      - name: Get release name from comment
+        if: ${{ contains(github.event.comment.body, 'release') }}
+        run: echo "::set-output name=release-name::${{ github.event.comment.body | split(' ') | nth(2) }}"
+      - name: Get release version from comment
+        if: ${{ contains(github.event.comment.body, 'release') }}
+        run: echo "::set-output name=release-version::${{ github.event.comment.body | split(' ') | nth(3) }}"
+      - name: Print variable values
+        if: ${{ contains(github.event.comment.body, 'release') }}
+        run: |
+          echo "Org name: $org-name"
+          echo "Release name: $release-name"
+          echo "Release version: $release-version"
