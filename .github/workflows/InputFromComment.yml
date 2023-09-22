@@ -41,7 +41,7 @@ jobs:
             fi
           else
             echo "The specific word '$specific_word' was not found in the latest commit message."
-            var="true"
+            var="false"
             echo "::set-output name=alpha_found::$var"
           fi
 
