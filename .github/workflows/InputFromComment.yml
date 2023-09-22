@@ -26,7 +26,8 @@ jobs:
           
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
             echo "Found the specific word '$specific_word' in the latest commit message."
-            echo "::set-output name=alpha_found::true"
+            var="true"
+            echo "::set-output name=alpha_found::$var"
             
             # Split the commit message into words
             IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
@@ -40,7 +41,8 @@ jobs:
             fi
           else
             echo "The specific word '$specific_word' was not found in the latest commit message."
-            echo "::set-output name=alpha_found::false"
+            var="true"
+            echo "::set-output name=alpha_found::$var"
           fi
 
       - name: Print 2nd and 3rd Words
