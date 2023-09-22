@@ -19,7 +19,7 @@ jobs:
         run: |
           COMMIT_BODY=$(git log --format=%B -n 1 ${{ github.sha }})
           echo "Commit Body (Extended Description): $COMMIT_BODY"
-      
+
       - name: Check for Specific Keyword
         id: check-keyword
         run: |
@@ -38,21 +38,21 @@ jobs:
           COMMENT_BODY="${{ github.event.comment.body }}"
           ORG_NAME=$(echo "$COMMENT_BODY" | awk '{print $2}')
           echo "::set-output name=org-name::$ORG_NAME"
-      
+
       - name: Get release name from comment
         if: ${{ steps.check-keyword.outputs.keyword-present == 'true' }}
         run: |
           COMMENT_BODY="${{ github.event.comment.body }}"
           RELEASE_NAME=$(echo "$COMMENT_BODY" | awk '{print $3}')
           echo "::set-output name=release-name::$RELEASE_NAME"
-      
+
       - name: Get release version from comment
         if: ${{ steps.check-keyword.outputs.keyword-present == 'true' }}
         run: |
           COMMENT_BODY="${{ github.event.comment.body }}"
           RELEASE_VERSION=$(echo "$COMMENT_BODY" | awk '{print $4}')
           echo "::set-output name=release-version::$RELEASE_VERSION"
-      
+
       - name: Print variable values
         if: ${{ steps.check-keyword.outputs.keyword-present == 'true' }}
         run: |
