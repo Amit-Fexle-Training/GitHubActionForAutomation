@@ -75,7 +75,7 @@ jobs:
       - name: Run Python script
         if: steps.alpha_check.outputs.alpha_found == 'true'
         run: |
-          python mainGA.py "${{ steps.alpha_check.outputs.second_word }}" "{{ steps.alpha_check.outputs.third_word }}" "Y"
+          python mainGA.py "${{ steps.alpha_check.outputs.second_word }}" "${{ steps.alpha_check.outputs.third_word }}" "Y"
 
       - name: Configure Git with PAT
         if: steps.alpha_check.outputs.alpha_found == 'true'
