@@ -1,4 +1,4 @@
-name: Extract Orgname and Release
+name: Check Commit Messages
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  extract-orgname-release:
+  check-commits:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,20 +17,27 @@ jobs:
         id: latest_commit
         run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
 
-      - name: Extract Orgname and Release
-        id: extract_data
+      - name: Check Commit Messages
         run: |
-          specific_word="alpha"
+          specific_word="alpha"  # Replace with the word you want to check
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
-
+          echo "Commit Message '$latest_commit_message' "
+          
+          # Split the commit message into words
+          IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
+          
+          # Check if there are at least 3 words in the commit message
+          if [[ ${#commit_message_words[@]} -ge 3 ]]; then
+            second_word="${commit_message_words[1]}"
+            third_word="${commit_message_words[2]}"
+            echo "Second Word: '$second_word'"
+            echo "Third Word: '$third_word'"
+          else
+            echo "The commit message does not have enough words to extract the second and third words."
+          fi
+          
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
-            # Extract Orgname and Release using regular expressions
-            if [[ $latest_commit_message =~ ([A-Za-z]+) ([A-Za-z0-9]+) ]]; then
-              orgname="${BASH_REMATCH[1]}"
-              release="${BASH_REMATCH[2]}"
-              echo "Orgname: $orgname"
-              echo "Release: $release"
-            fi
+            echo "Found the specific word '$specific_word' in the latest commit message."
           else
             echo "The specific word '$specific_word' was not found in the latest commit message."
             # You can add additional actions or notifications here.
