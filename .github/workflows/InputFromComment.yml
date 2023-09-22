@@ -26,19 +26,19 @@ jobs:
           
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
             echo "Found the specific word '$specific_word' in the latest commit message."
-            export alpha_found="true"
+            echo "::set-env name=alpha_found::true"
             
             # Split the commit message into words
             IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
             
             # Store the second and third words in environment variables if they exist
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
-              export SECOND_WORD="${commit_message_words[1]}"
-              export THIRD_WORD="${commit_message_words[2]}"
+              echo "::set-env name=SECOND_WORD::${commit_message_words[1]}"
+              echo "::set-env name=THIRD_WORD::${commit_message_words[2]}"
             fi
           else
             echo "The specific word '$specific_word' was not found in the latest commit message."
-            export alpha_found="false"
+            echo "::set-env name=alpha_found::false"
           fi
 
       - name: Print 2nd and 3rd Words
