@@ -13,9 +13,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Get Latest Commit Message
+        id: latest_commit
+        run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
+
       - name: Check Commit Messages
         run: |
-          specific_word="alpha"  # Replace with the word you want to check
+          specific_word="beta"  # Replace with the word you want to check
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
           echo "Commit Message '$latest_commit_message' "
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
@@ -24,3 +28,4 @@ jobs:
             echo "The specific word '$specific_word' was not found in the latest commit message."
             # You can add additional actions or notifications here.
           fi
+          
