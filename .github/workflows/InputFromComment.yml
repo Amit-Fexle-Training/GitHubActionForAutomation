@@ -42,7 +42,7 @@ jobs:
           fi
 
       - name: Print 2nd and 3rd Words
-        if: env.alpha_found == 'true'
+        #if: env.alpha_found == 'true'
         run: |
           echo "Second Word: '$SECOND_WORD'"
           echo "Third Word: '$THIRD_WORD'"
