@@ -10,7 +10,9 @@ import copy
 import json
 import sys
 
-warnings.simplefilter(action='ignore', category=FutureWarning)
+print(sys.argv[1], sys.argv[2], sys.argv[3])
+
+'''warnings.simplefilter(action='ignore', category=FutureWarning)
 
 config = configparser.ConfigParser()
 
@@ -22,27 +24,27 @@ options = options_df.set_index('orgName')['configFileName'].to_dict()
 
 listOfChoices = []
 releaseName  = sys.argv[1] #input('Please enter the release Name: ')
-while True:
-    print("Select an option:")
-    for index, org_name in enumerate(options.keys(), start=1):
-        print(f"{index}. {org_name}")
-        listOfChoices.append(org_name)
+#while True:
+print("Select an option:")
+for index, org_name in enumerate(options.keys(), start=1):
+    print(f"{index}. {org_name}")
+    listOfChoices.append(org_name)
 
-    print("0. Exit")
+print("0. Exit")
 
-    choice = sys.argv[2] #input("Enter your choice (0-{max_choice}): ".format(max_choice=len(options)))
+choice = sys.argv[2] #input("Enter your choice (0-{max_choice}): ".format(max_choice=len(options)))
 
-    if choice == '0':
-        print("Exiting...")
+if choice == '0':
+    print("Exiting...")
+    break
+elif choice.isdigit() and int(choice) in range(1, len(options) + 1):
+    selected_option = list(options.keys())[int(choice) - 1]
+    print("You have selected:", selected_option)
+    confirmation = sys.argv[3] #input("Confirm your choice (Y/N): ")
+    if confirmation.lower() == 'y':
         break
-    elif choice.isdigit() and int(choice) in range(1, len(options) + 1):
-        selected_option = list(options.keys())[int(choice) - 1]
-        print("You have selected:", selected_option)
-        confirmation = sys.argv[3] #input("Confirm your choice (Y/N): ")
-        if confirmation.lower() == 'y':
-            break
-    else:
-        print("Invalid choice. Please try again.")
+else:
+    print("Invalid choice. Please try again.")
 
 fileName = options[selected_option]+'.ini'
 
@@ -158,4 +160,4 @@ if not os.path.exists(results_folder_path):
 if os.path.exists(results_folder_path):
     csvFileName = f'{results_folder_path}/'+selected_option+'Result.csv'
     resultDf.to_csv(csvFileName)
-    print('Results saved successfully')
+    print('Results saved successfully')'''
