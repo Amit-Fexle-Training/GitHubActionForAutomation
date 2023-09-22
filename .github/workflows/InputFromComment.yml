@@ -19,7 +19,7 @@ jobs:
 
       - name: Check Commit Messages
         run: |
-          specific_word="beta"  # Replace with the word you want to check
+          specific_word="beta1"  # Replace with the word you want to check
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
           echo "Commit Message '$latest_commit_message' "
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
