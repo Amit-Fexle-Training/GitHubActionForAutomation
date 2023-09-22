@@ -44,7 +44,7 @@ jobs:
           fi
 
       - name: Print 2nd and 3rd Words
-        #if: steps.alpha_check.outputs.alpha_found == 'true'
+        if: steps.alpha_check.outputs.alpha_found == 'true'
         run: |
           echo "Second Word: '${{ steps.alpha_check.outputs.second_word }}'"
           echo "Third Word: '${{ steps.alpha_check.outputs.third_word }}'"
