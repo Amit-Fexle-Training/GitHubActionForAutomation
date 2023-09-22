@@ -14,29 +14,28 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get Latest Commit Message
-        id: latest_commit
         run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
 
-      - name: Check Commit Messages
+      - name: Check Commit Message
         run: |
-          specific_word="alpha"  # Replace with the word you want to check
+          specific_word="alpha"
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
-          echo "Commit Message '$latest_commit_message' "
           
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
-            echo "Found the specific word '$specific_word' in the latest commit message."
-            
+            echo "::set-output name=alpha_found::true"
             # Split the commit message into words
             IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
-            
-            # Print the second and third words if they exist
+
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
-              second_word="${commit_message_words[1]}"
-              third_word="${commit_message_words[2]}"
-              echo "Second Word: '$second_word'"
-              echo "Third Word: '$third_word'"
-            fi
+            second_word="${commit_message_words[1]}"
+            third_word="${commit_message_words[2]}"
           else
-            echo "The specific word '$specific_word' was not found in the latest commit message."
-            # You can add additional actions or notifications here.
+            echo "::set-output name=alpha_found::false"
+          fi
+
+      - name: Print 2nd and 3rd Words
+        if: steps.alpha_check.outputs.alpha_found == 'true'
+        run: |
+          echo "Second Word: '$second_word'"
+          echo "Third Word: '$third_word'"
           fi
