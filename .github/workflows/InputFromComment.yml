@@ -88,7 +88,7 @@ jobs:
       - name: Commit and push changes
         if: steps.alpha_check.outputs.alpha_found == 'true'
         run: |
-          releaseName="${{ github.event.inputs.input1 }}_results/"
+          releaseName="${{ steps.alpha_check.outputs.second_word }}_results/"
           git add "$releaseName"  # Useing the releaseName as part of the path
           git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
           git push
