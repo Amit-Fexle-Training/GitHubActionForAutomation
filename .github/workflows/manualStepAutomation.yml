@@ -2,29 +2,6 @@ name: Manual Step Automation
 
 on:
   workflow_dispatch:
-    inputs:
-      input1:
-        description: 'Please Enter The Release Name'
-        required: true
-        type: string
-      input2:
-        description: |
-                      Select The Org :
-                      1. Prod
-                      2. Twgqa2d
-        required: true
-        type: choice
-        options:
-          - '1'
-          - '2'
-      input3:
-        description: 'Confirm your choice (Y/N)'
-        required: true
-        default: 'Y'
-        type: choice
-        options:
-          - Y
-          - N
 jobs:
   manualStepAutomation:
     runs-on: ubuntu-latest
@@ -53,19 +30,6 @@ jobs:
 
       - name: Run Python script
         run: |
-          python mainGA.py "${{inputs.input1}}" "${{inputs.input2}}" "${{inputs.input3}}"
+          python mainGA.py "${{ github.event.inputs.input1 }}" "${{ github.event.inputs.input2 }}" "${{ github.event.inputs.input3 }}"
 
-      - name: Configure Git with PAT
-        run: |
-          git config --global user.email "amit.kumar@fexle.com"
-          git config --global user.name "Amit-Fexle-Training"
-        env:
-          PAT: ${{ secrets.REPO_PAT_SECRET }}
-    
-      - name: Commit and push changes
-        run: |
-          releaseName="${{ github.event.inputs.input1 }}_results/"
-          git add "$releaseName"  # Useing the releaseName as part of the path
-          git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
-          git push
     
