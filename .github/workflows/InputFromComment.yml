@@ -10,16 +10,25 @@ jobs:
     steps:
       - name: Get org name from comment
         if: ${{ contains(github.event.comment.body, 'release') }}
-        run: echo "::set-output name=org-name::${{ github.event.comment.body | split(' ') | nth(1) }}"
+        run: |
+          COMMENT_BODY=${{ github.event.comment.body }}
+          ORG_NAME=$(echo "$COMMENT_BODY" | awk '{print $2}')
+          echo "::set-output name=org-name::$ORG_NAME"
       - name: Get release name from comment
         if: ${{ contains(github.event.comment.body, 'release') }}
-        run: echo "::set-output name=release-name::${{ github.event.comment.body | split(' ') | nth(2) }}"
+        run: |
+          COMMENT_BODY=${{ github.event.comment.body }}
+          RELEASE_NAME=$(echo "$COMMENT_BODY" | awk '{print $3}')
+          echo "::set-output name=release-name::$RELEASE_NAME"
       - name: Get release version from comment
         if: ${{ contains(github.event.comment.body, 'release') }}
-        run: echo "::set-output name=release-version::${{ github.event.comment.body | split(' ') | nth(3) }}"
+        run: |
+          COMMENT_BODY=${{ github.event.comment.body }}
+          RELEASE_VERSION=$(echo "$COMMENT_BODY" | awk '{print $4}')
+          echo "::set-output name=release-version::$RELEASE_VERSION"
       - name: Print variable values
         if: ${{ contains(github.event.comment.body, 'release') }}
         run: |
-          echo "Org name: $org-name"
-          echo "Release name: $release-name"
-          echo "Release version: $release-version"
+          echo "Org name: $ORG_NAME"
+          echo "Release name: $RELEASE_NAME"
+          echo "Release version: $RELEASE_VERSION"
