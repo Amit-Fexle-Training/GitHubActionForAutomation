@@ -16,19 +16,22 @@ jobs:
       - name: Get Latest Commit Message
         run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
 
-      - name: Check Commit Message
+      - name: Check Commit Messages
         run: |
           specific_word="alpha"
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
           
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
             echo "::set-output name=alpha_found::true"
+            
             # Split the commit message into words
             IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
-
+            
+            # Print the second and third words if they exist
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
               second_word="${commit_message_words[1]}"
               third_word="${commit_message_words[2]}"
+            fi
           else
             echo "::set-output name=alpha_found::false"
           fi
