@@ -21,6 +21,7 @@ jobs:
         run: |
           specific_word="alpha"
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
+          echo "latest_commit_message '$latest_commit_message' "
           
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
             echo "Found the specific word '$specific_word' in the latest commit message."
