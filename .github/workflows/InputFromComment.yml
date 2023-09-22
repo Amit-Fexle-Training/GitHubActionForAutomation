@@ -9,6 +9,11 @@ jobs:
   check-commits:
     runs-on: ubuntu-latest
 
+    outputs:
+      alpha_found: ${{ steps.alpha_check.outputs.alpha_found }}
+      second_word: ${{ steps.alpha_check.outputs.second_word }}
+      third_word: ${{ steps.alpha_check.outputs.third_word }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -17,6 +22,7 @@ jobs:
         run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
 
       - name: Check Commit Messages
+        id: alpha_check
         run: |
           specific_word="alpha"
           latest_commit_message="${{ steps.latest_commit.outputs.message }}"
@@ -31,14 +37,15 @@ jobs:
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
               second_word="${commit_message_words[1]}"
               third_word="${commit_message_words[2]}"
+              echo "::set-output name=second_word::$second_word"
+              echo "::set-output name=third_word::$third_word"
             fi
           else
             echo "::set-output name=alpha_found::false"
           fi
 
       - name: Print 2nd and 3rd Words
-        #if: steps.alpha_check.outputs.alpha_found == 'true'
+        if: steps.alpha_check.outputs.alpha_found == 'true'
         run: |
-          echo "Second Word: '$second_word'"
-          echo "Third Word: '$third_word'"
-          fi
+          echo "Second Word: '${{ needs.check-commits.outputs.second_word }}'"
+          echo "Third Word: '${{ needs.check-commits.outputs.third_word }}'"
