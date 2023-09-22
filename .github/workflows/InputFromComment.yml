@@ -16,18 +16,9 @@ jobs:
       - name: Check Commit Messages
         run: |
           specific_word="alpha"  # Replace with the word you want to check
-          found=false
-
-          # Iterate through the commit messages
-          for commit_message in $(git log --format=%s); do
-            if [[ $commit_message == *"$specific_word"* ]]; then
-              echo "Found the specific word '$specific_word' in one of the commit messages."
-              found=true
-              break
-            fi
-          done
-
-          if [[ "$found" == "false" ]]; then
-            echo "The specific word '$specific_word' was not found in the commit messages."
+          if [[ $latest_commit_message == *"$specific_word"* ]]; then
+            echo "Found the specific word '$specific_word' in the latest commit message."
+          else
+            echo "The specific word '$specific_word' was not found in the latest commit message."
             # You can add additional actions or notifications here.
           fi
