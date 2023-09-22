@@ -1,64 +1,33 @@
-name: Input From Comment
+name: Check Commit Messages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  deploy:
+  check-commits:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      - name: Set Up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Read Commit Body (Extended Description)
-        id: commit-body
-        run: |
-          COMMIT_BODY=$(git log --format=%B -n 1 ${{ github.sha }})
-          echo "Commit Body (Extended Description): $COMMIT_BODY"
 
-      - name: Check for Specific Keyword
-        id: check-keyword
+      - name: Check Commit Messages
         run: |
-          COMMIT_BODY="${{ steps.commit-body.outputs.COMMIT_BODY }}"
-          if [[ "$COMMIT_BODY" == *"release"* ]]; then
-            echo "Specific keyword 'release' found in commit body."
-            echo "::set-output name=keyword-present::true"
-          else
-            echo "Specific keyword 'release' not found in commit body."
-            echo "::set-output name=keyword-present::false"
+          specific_word="alpha"  # Replace with the word you want to check
+          found=false
+
+          # Iterate through the commit messages
+          for commit_message in $(git log --format=%s); do
+            if [[ $commit_message == *"$specific_word"* ]]; then
+              echo "Found the specific word '$specific_word' in one of the commit messages."
+              found=true
+              break
+            fi
+          done
+
+          if [[ "$found" == "false" ]]; then
+            echo "The specific word '$specific_word' was not found in the commit messages."
+            # You can add additional actions or notifications here.
           fi
-
-      - name: Get org name from comment
-        if: ${{ steps.check-keyword.outputs.keyword-present == 'true' }}
-        run: |
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          ORG_NAME=$(echo "$COMMENT_BODY" | awk '{print $2}')
-          echo "::set-output name=org-name::$ORG_NAME"
-
-      - name: Get release name from comment
-        if: ${{ steps.check-keyword.outputs.keyword-present == 'true' }}
-        run: |
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          RELEASE_NAME=$(echo "$COMMENT_BODY" | awk '{print $3}')
-          echo "::set-output name=release-name::$RELEASE_NAME"
-
-      - name: Get release version from comment
-        if: ${{ steps.check-keyword.outputs.keyword-present == 'true' }}
-        run: |
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          RELEASE_VERSION=$(echo "$COMMENT_BODY" | awk '{print $4}')
-          echo "::set-output name=release-version::$RELEASE_VERSION"
-
-      - name: Print variable values
-        if: ${{ steps.check-keyword.outputs.keyword-present == 'true' }}
-        run: |
-          ORG_NAME="${{ steps.get-org-name.outputs.org-name }}"
-          RELEASE_NAME="${{ steps.get-release-name.outputs.release-name }}"
-          RELEASE_VERSION="${{ steps.get-release-version.outputs.release-version }}"
-          echo "Org name: $ORG_NAME"
-          echo "Release name: $RELEASE_NAME"
-          echo "Release version: $RELEASE_VERSION"
