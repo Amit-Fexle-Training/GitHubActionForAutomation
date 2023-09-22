@@ -10,9 +10,7 @@ import copy
 import json
 import sys
 
-print(sys.argv[1], sys.argv[2], sys.argv[3])
-
-'''warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 config = configparser.ConfigParser()
 
@@ -160,4 +158,4 @@ if not os.path.exists(results_folder_path):
 if os.path.exists(results_folder_path):
     csvFileName = f'{results_folder_path}/'+selected_option+'Result.csv'
     resultDf.to_csv(csvFileName)
-    print('Results saved successfully')'''
+    print('Results saved successfully')
