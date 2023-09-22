@@ -34,13 +34,13 @@ choice = sys.argv[2] #input("Enter your choice (0-{max_choice}): ".format(max_ch
 
 if choice == '0':
     print("Exiting...")
-    break
+    #break
 elif choice.isdigit() and int(choice) in range(1, len(options) + 1):
     selected_option = list(options.keys())[int(choice) - 1]
     print("You have selected:", selected_option)
     confirmation = sys.argv[3] #input("Confirm your choice (Y/N): ")
     if confirmation.lower() == 'y':
-        break
+        #break
 else:
     print("Invalid choice. Please try again.")
 
