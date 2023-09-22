@@ -22,27 +22,27 @@ options = options_df.set_index('orgName')['configFileName'].to_dict()
 
 listOfChoices = []
 releaseName  = sys.argv[1] #input('Please enter the release Name: ')
-#while True:
-print("Select an option:")
-for index, org_name in enumerate(options.keys(), start=1):
-    print(f"{index}. {org_name}")
-    listOfChoices.append(org_name)
-
-print("0. Exit")
-
-choice = sys.argv[2] #input("Enter your choice (0-{max_choice}): ".format(max_choice=len(options)))
-
-if choice == '0':
-    print("Exiting...")
-    #break
-elif choice.isdigit() and int(choice) in range(1, len(options) + 1):
-    selected_option = list(options.keys())[int(choice) - 1]
-    print("You have selected:", selected_option)
-    confirmation = sys.argv[3] #input("Confirm your choice (Y/N): ")
-    if confirmation.lower() == 'y':
-        #break
-else:
-    print("Invalid choice. Please try again.")
+while True:
+    print("Select an option:")
+    for index, org_name in enumerate(options.keys(), start=1):
+        print(f"{index}. {org_name}")
+        listOfChoices.append(org_name)
+    
+    print("0. Exit")
+    
+    choice = sys.argv[2] #input("Enter your choice (0-{max_choice}): ".format(max_choice=len(options)))
+    
+    if choice == '0':
+        print("Exiting...")
+        break
+    elif choice.isdigit() and int(choice) in range(1, len(options) + 1):
+        selected_option = list(options.keys())[int(choice) - 1]
+        print("You have selected:", selected_option)
+        confirmation = sys.argv[3] #input("Confirm your choice (Y/N): ")
+        if confirmation.lower() == 'y':
+            break
+    else:
+        print("Invalid choice. Please try again.")
 
 fileName = options[selected_option]+'.ini'
 
