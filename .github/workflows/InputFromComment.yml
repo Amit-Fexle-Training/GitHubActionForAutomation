@@ -15,7 +15,7 @@ jobs:
 
       - name: Get Latest Commit Message
         id: latest_commit
-        run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
+        run: echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
 
       - name: Check for "RunScript" in Commit Message
         id: RunScript_check
@@ -27,7 +27,7 @@ jobs:
           if [[ $latest_commit_message == *"$specific_word"* ]]; then
             echo "Found the specific word '$specific_word' in the latest commit message."
             var="true"
-            echo "::set-output name=RunScript_found::$var"
+            echo "RunScript_found=$var" >>$GITHUB_OUTPUT
             
             # Split the commit message into words
             IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
@@ -36,13 +36,13 @@ jobs:
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
               second_word="${commit_message_words[1]}"
               third_word="${commit_message_words[2]}"
-              echo "::set-output name=second_word::$second_word"
-              echo "::set-output name=third_word::$third_word"
+              echo "second_word=$second_word" >>$GITHUB_OUTPUT
+              echo "third_word=$third_word" >>$GITHUB_OUTPUT
             fi
           else
             echo "The specific word '$specific_word' was not found in the latest commit message."
             var="false"
-            echo "::set-output name=RunScript_found::$var"
+            echo "RunScript_found=$var" >>$GITHUB_OUTPUT
           fi
 
       - name: Print 2nd and 3rd Words
@@ -53,13 +53,13 @@ jobs:
 
       - name: Set up Python
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
-          python-version: 3.8
+          python-version: 3.11
 
       - name: Cache Python dependencies
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
