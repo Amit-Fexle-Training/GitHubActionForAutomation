@@ -37,9 +37,9 @@ jobs:
             IFS=' ' read -ra commit_message_words <<< "$merge_commit_message"
             
             # Store the second and third words in environment variables if they exist
-            if [[ ${#commit_message_words[@]} -ge 3 ]]; then
-              second_word="${commit_message_words[1]}"
-              third_word="${commit_message_words[2]}"
+            if [[ ${#merge_commit_message[@]} -ge 3 ]]; then
+              second_word="${merge_commit_message[1]}"
+              third_word="${merge_commit_message[2]}"
               echo "second_word=$second_word" >> $GITHUB_ENV
               echo "third_word=$third_word" >> $GITHUB_ENV
             fi
