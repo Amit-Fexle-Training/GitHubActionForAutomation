@@ -9,7 +9,7 @@ import pandas as pd
 import copy
 import json
 import sys
-# Comment For Demo Perpose..
+# Comment For Demo Perpose...
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 config = configparser.ConfigParser()
