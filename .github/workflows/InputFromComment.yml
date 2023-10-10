@@ -3,7 +3,7 @@ name: Manual Step Automation 2.0
 on:
   push:
     branches:
-      - main
+      -! main
 
 jobs:
   manualStepAutomation:
