@@ -12,6 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check if PR was merged
+        if: github.event.pull_request.merged == true
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+
+          # Fetch the pull request's description
+          PR_DESCRIPTION=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" \
+            | jq -r .body)
+
+          echo "PR Title: $PR_TITLE"
+          echo "Merge Message: $PR_DESCRIPTION"
+          
       - name: Checkout Code
         uses: actions/checkout@v3
 
