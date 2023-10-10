@@ -70,16 +70,18 @@ columnsToKeep.append(successColumn)
 columnsToKeep.append(errorColumn)
 resultDf[successColumn] = None
 resultDf[errorColumn] = None
+configDF[errorColumn] = False #****
 
 #secondary_path_folder_name = 'scripts\apex'
-def read_files_in_folder(folder_path):
-    isExecutingFirstTime = True
-    results = None
+def read_files_in_folder(folder_path, configDF):
+#     isExecutingFirstTime = True
+#     results = None
     # Check if the folder path exists
     if not os.path.exists(folder_path):
         print("Folder path does not exist.")
         return
     
+    failed_script_name = '' #****
     # Loop over all files in the folder
     for scriptFileName in os.listdir(folder_path):
         file_name_without_extension = os.path.splitext(scriptFileName)[0]
@@ -89,55 +91,65 @@ def read_files_in_folder(folder_path):
         if(df.size>0 and list(df['Execute Script? (Admin Only)'])[0] and list(df[selected_option.upper()])[0]):
             index = configDF.index[configDF['Script File Name'] == file_name_without_extension].tolist()[0]
             runAsUserName = list(df['Run As UserName'])[0]
+            error = list(df['error'])[0]
             
-            #Connection with the Source Org for SystemIntegrationUser User
-            username = config.get(runAsUserName, 'username')
-            password = config.get(runAsUserName, 'password')
-            #org_id = config.get(runAsUserName, 'orgId')
-            security_token = config.get(runAsUserName, 'security_token')
-            sfapi = config.get(runAsUserName, 'sfapi')
-            domain = config.get(runAsUserName, 'domain')
+            if not error: #****
+                #Connection with the Source Org for SystemIntegrationUser User
+                username = config.get(runAsUserName, 'username')
+                password = config.get(runAsUserName, 'password')
+                org_id = config.get(runAsUserName, 'orgId')
+                org_alias = config.get(runAsUserName, 'org_alias')
+                sfapi = config.get(runAsUserName, 'sfapi')
+                domain = config.get(runAsUserName, 'domain')
 
-            sf = Salesforce(username=username, password=password, security_token= security_token, domain= domain)
+                sf = Salesforce(username=username, password=password, organizationId= org_id, domain= domain)
 
-            file_path = os.path.join(folder_path, scriptFileName)
+                file_path = os.path.join(folder_path, scriptFileName)
 
-            # Check if the current item is a file
-            if os.path.isfile(file_path):
-                # Read the file contents
-                with open(file_path, 'r') as file:
-                    scriptCode = file.read()
-                    print(f"executing File: {scriptFileName}")
-                    result = sf.restful('tooling/executeAnonymous', 
-                                             { 'anonymousBody': f'{scriptCode}' })
-                    result['Story Number'] = file_name_without_extension
-                    if result['success']:
-                        print(f"Script executed successfully for {scriptFileName}")
-                        resultDf.at[index, successColumn] = result['success']
-                        resultDf.at[index, errorColumn] = result['exceptionMessage']
-                    else:
-                        resultDf.at[index, errorColumn] = result['exceptionMessage']
-                        resultDf.at[index, successColumn] = result['success']
-                        print(f"Script not executed due to {result['exceptionMessage']}")
-                    
-                    records = pd.DataFrame(result,index=[0])
-                    
-                    if(isExecutingFirstTime == True):
-                        results = records
-                        isExecutingFirstTime = False
-                    else:
-                        existing_df = resultDf
-                        updated_sheet = pd.concat([existing_df, records], ignore_index=True)
-                        results = updated_sheet
-                    
-                    print("")
-                    
+                # Check if the current item is a file
+                if os.path.isfile(file_path):
+                    # Read the file contents
+                    with open(file_path, 'r') as file:
+                        scriptCode = file.read()
+                        print(f"executing File: {scriptFileName}")
+                        result = sf.restful('tooling/executeAnonymous', 
+                                                 { 'anonymousBody': f'{scriptCode}' })
+                        result['Story Number'] = file_name_without_extension
+                        if result['success']:
+                            print(f"Script executed successfully for {scriptFileName}")
+                            resultDf.at[index, successColumn] = result['success']
+                            resultDf.at[index, errorColumn] = result['exceptionMessage']
+                        else:
+                            resultDf.at[index, errorColumn] = result['exceptionMessage']
+                            resultDf.at[index, successColumn] = result['success']
+                            print(f"Script not executed due to {result['exceptionMessage']}")
+                            configDF.loc[configDF['Script File Name'].str.startswith(file_name_without_extension.split('_')[0]), 'error'] = True #****
+                            failed_script_name = scriptFileName #****
+                            
+
+                        records = pd.DataFrame(result,index=[0])
+
+#                         if(isExecutingFirstTime == True):
+#                             results = records
+#                             isExecutingFirstTime = False
+#                         else:
+#                             existing_df = resultDf
+#                             updated_sheet = pd.concat([existing_df, records], ignore_index=True)
+#                             results = updated_sheet
+
+                        print("")
+            else: #****
+                print(f'executing File: {scriptFileName}')
+                resultDf.at[index, errorColumn] = f'Script not executed due to {failed_script_name} fails to execute'
+                resultDf.at[index, successColumn] = False
+                print(f'Script not executed due to {failed_script_name} fails to execute')
+                
     print('Execution Completed')
     return resultDf
 
 # Call the function to read files in the folder
 startTime = time.time()
-resultDf = read_files_in_folder(folder_path)
+resultDf = read_files_in_folder(folder_path, configDF) 
 endTime = time.time()
 timediff = round((endTime -  startTime)/60,2)
 print(f'Total time to execute the script {timediff}')
