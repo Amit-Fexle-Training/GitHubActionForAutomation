@@ -15,40 +15,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Check PR Comments
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prNumber = context.payload.pull_request.number;
-
-            const { data: comments } = await github.pulls.listReviewComments({
-              owner,
-              repo,
-              pull_number: prNumber,
-            });
-
-            if (comments.length > 0) {
-              const latestComment = comments[comments.length - 1];
-              const commentBody = latestComment.body;
-
-              if (commentBody.includes('RunScript')) {
-                const words = commentBody.split(/\s+/);
-                if (words.length >= 3) {
-                  const secondWord = words[1];
-                  const thirdWord = words[2];
-                  console.log(`Second Word: ${secondWord}`);
-                  console.log(`Third Word: ${thirdWord}`);
-                }
-              }
-            }
-
       - name: Get Merge Message
         id: merge_commit
         run: |
-          merge_commit_message=${{ github.event.pull_request.merged_commit.message }}"
+          merge_commit_message="${{ github.event.pull_request.title }}"
           echo "merge_commit_message=$merge_commit_message" >> $GITHUB_ENV
           echo "Merge Message '$merge_commit_message' "
 
