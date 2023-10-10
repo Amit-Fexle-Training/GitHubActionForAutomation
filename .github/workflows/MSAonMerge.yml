@@ -32,7 +32,7 @@ jobs:
             echo "Found the specific word '$specific_word' in the latest commit message."
             var="true"
             echo "RunScript_found=$var" >>$GITHUB_OUTPUT
-            echo "RunScript_found '$RunScript_found' "
+            echo "RunScript_found: '$RunScript_found' "
             
             # Split the merge commit message into words
             IFS=' ' read -ra commit_message_words <<< "$merge_commit_message"
