@@ -26,13 +26,11 @@ jobs:
         run: |
           specific_word="RunScript"
           merge_commit_message="${{ env.merge_commit_message }}"
-          echo "Merge Commit Message '$merge_commit_message' "
           
           if [[ $merge_commit_message == *"$specific_word"* ]]; then
             echo "Found the specific word '$specific_word' in the latest commit message."
             var="true"
             echo "RunScript_found=$var" >>$GITHUB_OUTPUT
-            echo "RunScript_found: '$RunScript_found' "
             
             # Split the merge commit message into words
             IFS=' ' read -ra commit_message_words <<< "$merge_commit_message"
@@ -41,13 +39,10 @@ jobs:
             
             # Store the second and third words in environment variables if they exist
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
-              echo "Inside If "
               second_word="${commit_message_words[1]}"
               third_word="${commit_message_words[2]}"
-              echo "second_word=$second_word" >> $GITHUB_ENV
-              echo "third_word=$third_word" >> $GITHUB_ENV
-              echo "second_word : '$second_word' third_word : '$third_word' "
-            echo "Outside If "
+              echo "second_word=$second_word" >> $GITHUB_OUTPUT
+              echo "third_word=$third_word" >> $GITHUB_OUTPUT
             fi
           else
             echo "The specific word '$specific_word' was not found in the merge commit message."
