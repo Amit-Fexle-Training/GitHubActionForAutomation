@@ -15,10 +15,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Get Latest Commit Message
+      - name: Get Merge Message
         id: merge_commit
         run: |
-          merge_commit_message=${{ github.event.head_commit.message }}
+          merge_commit_message=${{ github.event.pull_request.merged_commit.message }}"
           echo "merge_commit_message=$merge_commit_message" >> $GITHUB_ENV
           echo "Merge Message '$merge_commit_message' "
 
