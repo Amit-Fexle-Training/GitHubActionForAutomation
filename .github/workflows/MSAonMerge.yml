@@ -20,7 +20,6 @@ jobs:
         run: |
           merge_commit_message="${{ github.event.pull_request.title }}"
           echo "merge_commit_message=$merge_commit_message" >> $GITHUB_ENV
-          echo "Merge Message '$merge_commit_message' "
 
       - name: Check for "RunScript" in Merge Commit Message
         id: RunScript_check
