@@ -29,9 +29,9 @@ jobs:
           echo "Merge Commit Message '$merge_commit_message' "
           
           if [[ $merge_commit_message == *"$specific_word"* ]]; then
-            echo "Found the specific word '$specific_word' in the merge commit message."
+            echo "Found the specific word '$specific_word' in the latest commit message."
             var="true"
-            echo "RunScript_found=$var" >> $GITHUB_ENV
+            echo "RunScript_found=$var" >>$GITHUB_OUTPUT
             echo "RunScript_found '$RunScript_found' "
             
             # Split the merge commit message into words
