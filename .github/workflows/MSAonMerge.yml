@@ -1,0 +1,90 @@
+name: Manual Step Automation 2.0
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  manualStepAutomation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Get Latest Commit Message
+        id: latest_commit
+        run: echo "message=$(git log -1 --pretty=%B)" >>$GITHUB_OUTPUT
+
+      - name: Check for "RunScript" in Commit Message
+        id: RunScript_check
+        run: |
+          specific_word="RunScript" 
+          latest_commit_message="${{ steps.latest_commit.outputs.message }}"
+          echo "Commit Message '$latest_commit_message' "
+          
+          if [[ $latest_commit_message == *"$specific_word"* ]]; then
+            echo "Found the specific word '$specific_word' in the latest commit message."
+            var="true"
+            echo "RunScript_found=$var" >>$GITHUB_OUTPUT
+            
+            # Split the commit message into words
+            IFS=' ' read -ra commit_message_words <<< "$latest_commit_message"
+            
+            # Store the second and third words in environment variables if they exist
+            if [[ ${#commit_message_words[@]} -ge 3 ]]; then
+              second_word="${commit_message_words[1]}"
+              third_word="${commit_message_words[2]}"
+              echo "second_word=$second_word" >>$GITHUB_OUTPUT
+              echo "third_word=$third_word" >>$GITHUB_OUTPUT
+            fi
+          else
+            echo "The specific word '$specific_word' was not found in the latest commit message."
+            var="false"
+            echo "RunScript_found=$var" >>$GITHUB_OUTPUT
+          fi
+
+      - name: Set up Python
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.11
+
+      - name: Cache Python dependencies
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      - name: Install Python dependencies
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+
+      - name: Run Python script
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        run: |
+          python mainGA.py "${{ steps.RunScript_check.outputs.second_word }}" "${{ steps.RunScript_check.outputs.third_word }}" "Y"
+
+      - name: Configure Git with PAT
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        run: |
+          git config --global user.email "amit.kumar@fexle.com"
+          git config --global user.name "Amit-Fexle-Training"
+        env:
+          PAT: ${{ secrets.REPO_PAT_SECRET }}
+    
+      - name: Commit and push changes
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        run: |
+          releaseName="${{ steps.RunScript_check.outputs.second_word }}_results/"
+          git add "$releaseName"  # Useing the releaseName as part of the path
+          git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
+          git push
