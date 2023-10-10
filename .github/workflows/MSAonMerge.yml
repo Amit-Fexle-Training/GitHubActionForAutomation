@@ -20,6 +20,7 @@ jobs:
         run: |
           merge_commit_message=$(git log --merges --first-parent -n 1 --pretty=format:%B)
           echo "merge_commit_message=$merge_commit_message" >> $GITHUB_ENV
+          echo "Merge Message '$merge_commit_message' "
 
       - name: Check for "RunScript" in Merge Commit Message
         id: RunScript_check
