@@ -1,4 +1,4 @@
-name: Manual Step Automation
+name: Manual Step Automation 1.0
 
 on:
   workflow_dispatch:
