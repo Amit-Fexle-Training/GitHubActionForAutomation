@@ -21,13 +21,13 @@ jobs:
           merge_commit_message="${{ github.event.pull_request.title }}"
           echo "merge_commit_message=$merge_commit_message" >> $GITHUB_ENV
 
-      - name: Check for "RunScript" in Merge Commit Message
+      - name: Check Merge Commit Message Starts with "RunScript"
         id: RunScript_check
         run: |
           specific_word="RunScript"
           merge_commit_message="${{ env.merge_commit_message }}"
           
-          if [[ $merge_commit_message == *"$specific_word"* ]]; then
+          if [[ $merge_commit_message == "$specific_word"* ]]; then
             echo "Found the specific word '$specific_word' in the latest commit message."
             var="true"
             echo "RunScript_found=$var" >>$GITHUB_OUTPUT
