@@ -1,0 +1,27 @@
+name: Print Merge Message on Merge Closing
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  print_merge_message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR is merged and closed
+        id: pr_check
+        run: |
+          if [[ "${{ github.event.pull_request.merged }}" == "true" && "${{ github.event.pull_request.state }}" == "closed" ]]; then
+            echo "::set-output name=merged::true"
+          else
+            echo "::set-output name=merged::false"
+          fi
+
+      - name: Get Merge Commit Message
+        if: steps.pr_check.outputs.merged == 'true'
+        run: |
+          merge_commit_sha="${{ github.event.pull_request.merge_commit_sha }}"
+          merge_commit_message="$(git log -1 --format=%B $merge_commit_sha)"
+          echo "Merge Commit Message: $merge_commit_message"
