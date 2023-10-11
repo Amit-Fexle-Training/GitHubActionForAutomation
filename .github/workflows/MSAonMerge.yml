@@ -79,8 +79,8 @@ jobs:
       - name: Configure Git with PAT
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
         run: |
-          git config --global user.email "amit.kumar@fexle.com"
-          git config --global user.name "Amit-Fexle-Training"
+          git config --global user.email "${{ vars.USER_EMAIL }}"
+          git config --global user.name "${{vars.USER_NAME }}"
         env:
           PAT: ${{ secrets.REPO_PAT_SECRET }}
     
