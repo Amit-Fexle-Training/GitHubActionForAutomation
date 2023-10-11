@@ -15,34 +15,34 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Get Latest Commit Message
+      - name: Get Merge Message
         id: merge_commit
         run: |
-          merge_commit_message=${{ github.event.head_commit.message }}
+          merge_commit_message="${{ github.event.pull_request.title }}"
           echo "merge_commit_message=$merge_commit_message" >> $GITHUB_ENV
-          echo "Merge Message '$merge_commit_message' "
 
       - name: Check for "RunScript" in Merge Commit Message
         id: RunScript_check
         run: |
           specific_word="RunScript"
           merge_commit_message="${{ env.merge_commit_message }}"
-          echo "Merge Commit Message '$merge_commit_message' "
           
           if [[ $merge_commit_message == *"$specific_word"* ]]; then
-            echo "Found the specific word '$specific_word' in the merge commit message."
+            echo "Found the specific word '$specific_word' in the latest commit message."
             var="true"
-            echo "RunScript_found=$var" >> $GITHUB_ENV
+            echo "RunScript_found=$var" >>$GITHUB_OUTPUT
             
             # Split the merge commit message into words
             IFS=' ' read -ra commit_message_words <<< "$merge_commit_message"
+
+            echo "commit_message_words : '$commit_message_words' "
             
             # Store the second and third words in environment variables if they exist
             if [[ ${#commit_message_words[@]} -ge 3 ]]; then
               second_word="${commit_message_words[1]}"
               third_word="${commit_message_words[2]}"
-              echo "second_word=$second_word" >> $GITHUB_ENV
-              echo "third_word=$third_word" >> $GITHUB_ENV
+              echo "second_word=$second_word" >> $GITHUB_OUTPUT
+              echo "third_word=$third_word" >> $GITHUB_OUTPUT
             fi
           else
             echo "The specific word '$specific_word' was not found in the merge commit message."
@@ -79,8 +79,8 @@ jobs:
       - name: Configure Git with PAT
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
         run: |
-          git config --global user.email "amit.kumar@fexle.com"
-          git config --global user.name "Amit-Fexle-Training"
+          git config --global user.email "${{ vars.USER_EMAIL }}"
+          git config --global user.name "${{vars.USER_NAME }}"
         env:
           PAT: ${{ secrets.REPO_PAT_SECRET }}
     
