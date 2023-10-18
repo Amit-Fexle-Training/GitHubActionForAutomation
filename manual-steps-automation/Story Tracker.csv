@@ -33,6 +33,6 @@ Execute Script? (Admin Only),Script File Name,Run As UserName,TWGQA2D,PROD
 ,GB-2340,SystemIntegrationUser,TRUE,FALSE
 ,GB-2341,SystemIntegrationUser,TRUE,FALSE
 ,GB-2342,BillingStatementUser,TRUE,FALSE
-,GB-2342_1,BillingStatementUser,TRUE,FALSE
-,GB-2342_2,BillingStatementUser,TRUE,FALSE
-,GB-2342_3,BillingStatementUser,TRUE,FALSE
+,GB-2342_4,BillingStatementUser,TRUE,FALSE
+,GB-2342_6,BillingStatementUser,TRUE,FALSE
+,GB-2342_5,BillingStatementUser,TRUE,FALSE
