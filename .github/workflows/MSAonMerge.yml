@@ -90,7 +90,7 @@ jobs:
       - name: Run Python script
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
         run: |
-          python mainGA.py "${{ steps.RunScript_check.outputs.second_word }}" "${{ steps.RunScript_check.outputs.third_word }}" "Y" ${{ steps.list-files.outputs.changed_files }}
+          python main.py "${{ steps.RunScript_check.outputs.second_word }}" "${{ steps.RunScript_check.outputs.third_word }}" "Y" ${{ steps.list-files.outputs.changed_files }}
 
       - name: Configure Git with PAT
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
