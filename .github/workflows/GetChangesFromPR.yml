@@ -16,6 +16,7 @@ jobs:
 
       - name: Get Changes From PR
         id: files
+        continue-on-error: true
         uses: jitterbit/get-changed-files@v1
         with:
           format: 'csv'
