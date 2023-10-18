@@ -11,10 +11,12 @@ import sys
 
 
 
-chnages_from_PR = sys.argv[0]
+chnages_from_PR = []
+for arg in sys.argv[]:
+    chnages_from_PR.append(arg)
+
 print(chnages_from_PR)
 print(type(chnages_from_PR))
-
 #result_list = [file.split('/')[-1] for file in chnages_from_PR if file.startswith('manual-steps-automation/scripts/apex/') and file.endswith('.apex')]
 result_list = [file.split('/')[-1] for file in chnages_from_PR if file.endswith('.apex')]
 
