@@ -6,7 +6,7 @@
 //     SFDX: Execute Anonymous Apex with Editor Contents
 //GB-2313_FileName
 ////GB-2313_1_testlog
-string tempvar = GB-2313_1';
+string tempvar = 'GB-2313_1'
 System.debug('Scripts for GB-2313_1');
 System.debug('Anonymus Scripts for @@@@ ' + tempvar);
 
