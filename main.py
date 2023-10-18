@@ -164,7 +164,7 @@ startTime = time.time()
 
 changes_from_PR = []
 for arg in sys.argv[1:]:
-    chnages_from_PR.append(arg)
+    changes_from_PR.append(arg)
 
 apex_class_with_changes = [file.split('/')[-1] for file in changes_from_PR if file.endswith('.apex')]
 
