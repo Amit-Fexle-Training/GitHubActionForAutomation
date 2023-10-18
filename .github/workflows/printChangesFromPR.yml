@@ -20,6 +20,9 @@ jobs:
           API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/files"
           CHANGED_FILES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq -r '.[].filename')
           
+          # Convert the list to a newline-delimited string
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          
           echo "Files with changes in PR #${PR_NUMBER}:"
           echo "$CHANGED_FILES"
           changed_files="${CHANGED_FILES}"
