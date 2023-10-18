@@ -15,7 +15,6 @@ jobs:
 
       - name: List Files with Changes
         run: |
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          CHANGED_FILES=$(git diff --name-only HEAD...$PR_NUMBER)
-          echo "Files with changes in PR #$PR_NUMBER:"
+          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }})
+          echo "Files with changes in PR #${{ github.event.pull_request.number }}:"
           echo "$CHANGED_FILES"
