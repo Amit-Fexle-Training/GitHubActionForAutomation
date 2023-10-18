@@ -1,0 +1,21 @@
+name: Get Changed File From PR
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+jobs:
+   changed_files:
+    runs-on: ubuntu-latest  # windows-latest || macos-latest
+    name: Test changed-files
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: List Files with Changes
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          CHANGED_FILES=$(git diff --name-only HEAD...$PR_NUMBER)
+          echo "Files with changes in PR #$PR_NUMBER:"
+          echo "$CHANGED_FILES"
