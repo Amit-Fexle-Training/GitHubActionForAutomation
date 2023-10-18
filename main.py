@@ -12,7 +12,7 @@ import sys
 
 
 chnages_from_PR = []
-for arg in sys.argv[]:
+for arg in sys.argv[1:]:
     chnages_from_PR.append(arg)
 
 print(chnages_from_PR)
