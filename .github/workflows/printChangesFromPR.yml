@@ -1,0 +1,33 @@
+name: Get Changed File From PR
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+jobs:
+   changed_files:
+    runs-on: ubuntu-latest  # windows-latest || macos-latest
+    name: Test changed-files
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: List Files with Changes
+        id: list-files
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/files"
+          CHANGED_FILES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq -r '.[].filename')
+          
+          # Convert the list to a newline-delimited string
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          
+          echo "Files with changes in PR #${PR_NUMBER}:"
+          echo "$CHANGED_FILES"
+          changed_files="${CHANGED_FILES}"
+          echo "changed_files=$changed_files" >> $GITHUB_OUTPUT
+
+      - name: Run Python Script
+        run: |
+          python main.py ${{ steps.list-files.outputs.changed_files }}

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 import os
 from simple_salesforce import Salesforce, format_soql
 from pprint import pprint
@@ -17,10 +14,6 @@ import json
 import sys
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-
-# In[2]:
-
-
 config = configparser.ConfigParser()
 
 # Read options from the CSV file into a DataFrame
@@ -31,10 +24,6 @@ options = options_df.set_index('orgName')['configFileName'].to_dict()
 
 listOfChoices = []
 releaseName  = sys.argv[1] #input('Please enter the release Name: ') 
-
-
-# In[3]:
-
 
 while True:
     print("Select an option:")
@@ -59,10 +48,6 @@ while True:
         print("Invalid choice. Please try again.")
         break
 
-
-# In[4]:
-
-
 fileName = options[selected_option]+'.ini'
 
 credsPath = 'creds/'
@@ -75,10 +60,6 @@ if os.path.isfile(fileName):
     config.read(fileName)
 else:
     print(f"The file '{fileName}' does not exist in the '{credsPath}' directory.")
-
-
-# In[5]:
-
 
 folder_path = 'manual-steps-automation/scripts/apex'
 configDF = pd.read_csv("manual-steps-automation/Story Tracker.csv")
@@ -93,9 +74,6 @@ columnsToKeep.append(errorColumn)
 resultDf[successColumn] = None
 resultDf[errorColumn] = None
 configDF[errorColumn] = False 
-
-
-# In[8]:
 
 
 #secondary_path_folder_name = 'scripts\apex'
@@ -181,10 +159,6 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF):
     print('Execution Completed')
     return resultDf
 
-
-# In[9]:
-
-
 # Call the function to read files in the folder
 startTime = time.time()
 
@@ -217,10 +191,3 @@ if os.path.exists(results_folder_path):
     csvFileName = f'{results_folder_path}/'+selected_option+'Result.csv'
     resultDf.to_csv(csvFileName)
     print('Results saved successfully')
-
-
-# In[ ]:
-
-
-
-
