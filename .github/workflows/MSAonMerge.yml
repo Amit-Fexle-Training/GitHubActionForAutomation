@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Merge Message
         id: merge_commit
@@ -50,6 +50,22 @@ jobs:
             echo "RunScript_found=$var" >> $GITHUB_ENV
           fi
 
+      - name: List Files with Changes
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        id: list-files
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/files"
+          CHANGED_FILES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq -r '.[].filename')
+
+          # Convert the list to a newline-delimited string
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          
+          echo "Files with changes in PR #${PR_NUMBER}:"
+          echo "$CHANGED_FILES"
+          changed_files="${CHANGED_FILES}"
+          echo "changed_files=$changed_files" >> $GITHUB_OUTPUT
+
       - name: Set up Python
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
         uses: actions/setup-python@v3
@@ -74,7 +90,7 @@ jobs:
       - name: Run Python script
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
         run: |
-          python mainGA.py "${{ steps.RunScript_check.outputs.second_word }}" "${{ steps.RunScript_check.outputs.third_word }}" "Y"
+          python mainGA.py "${{ steps.RunScript_check.outputs.second_word }}" "${{ steps.RunScript_check.outputs.third_word }}" "Y" ${{ steps.list-files.outputs.changed_files }}
 
       - name: Configure Git with PAT
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
