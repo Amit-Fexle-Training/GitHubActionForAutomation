@@ -162,7 +162,7 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF):
 # Call the function to read files in the folder
 startTime = time.time()
 
-chnages_from_PR = []
+changes_from_PR = []
 for arg in sys.argv[1:]:
     chnages_from_PR.append(arg)
 
