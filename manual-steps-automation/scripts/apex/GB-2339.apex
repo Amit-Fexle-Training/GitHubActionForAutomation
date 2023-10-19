@@ -1,3 +1,5 @@
+//UserName: SystemIntegrationUser
+//Environment: Qa1e,Prod, Twgqa2d
 FSO_SObject_And_RecordType_Mapping__c obj = [Select id, name, Client_Name__c, Object_Name__c from FSO_SObject_And_RecordType_Mapping__c order by name desc limit 1];
 
 Integer count = Integer.valueOf(obj.name.substring(1));

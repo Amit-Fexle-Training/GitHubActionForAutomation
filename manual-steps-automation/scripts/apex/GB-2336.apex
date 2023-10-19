@@ -1,3 +1,5 @@
+//UserName: SystemIntegrationUser
+//Environment: Qa1e,Prod, Twgqa2d
 List<Bin_Range__c> binList = new List<Bin_Range__c>();
 RecordType rc = [SELECT ID FROM RecordType WHERE SobjectType = 'Bin_Range__c' AND DeveloperName = 'FSO'];
 Bin_Range__c bin1 = new Bin_Range__c();

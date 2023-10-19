@@ -1,3 +1,5 @@
+//UserName: BillingStatementUser
+//Environment: Prod, Twgqa2d, Qa1e
 List<Letter_Template__c> listOfLetterTemplate = new List<Letter_Template__c>();
 listOfLetterTemplate.add(new Letter_Template__c(Document_Name__c = 'Closed_Without_Payment_Letter', Template_Id__c = 'AMEX058-Closed Without Payment Letter', 
                                                 Email_Template_Name__c = 'AMEXClaimClosedWithoutPayment', Template_Description__c = 'Claim Closed Without Payment AMEX', 
