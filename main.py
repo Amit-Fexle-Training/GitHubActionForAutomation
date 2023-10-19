@@ -121,9 +121,12 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF):
         for apex_class in apex_class_with_changes:
             configDF.loc[configDF['Script File Name'] == apex_class.split('.')[0], 'error'] = False 
     
+    # List all files in the directory and sort them by name
+    file_names = sorted(os.listdir(folder_path))
+    
     #failed_script_name = '' 
     # Loop over all files in the folder
-    for scriptFileName in os.listdir(folder_path):
+    for scriptFileName in file_names:
         file_name_without_extension = os.path.splitext(scriptFileName)[0]
         df = configDF[configDF['Script File Name'] == file_name_without_extension]
         #print(list(df['Execute Script? (Admin Only)'])[0])
@@ -190,7 +193,6 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF):
     print('Execution Completed')
     return resultDf
 
-
 # Call the function to read files in the folder
 startTime = time.time()
 
@@ -225,12 +227,11 @@ if not os.path.exists(results_folder_path):
         print(f"Failed to create results folder at '{results_folder_path}'")
         
 if os.path.exists(results_folder_path):
-
     csvFileName = f'{results_folder_path}/'+selected_option+'Success Result.csv'
-    df_success.to_csv(csvFileName)
+    df_success.to_csv(csvFileName, index=False)
     
     csvFileName = f'{results_folder_path}/'+selected_option+'Failure Result.csv'
-    df_failure.to_csv(csvFileName)
+    df_failure.to_csv(csvFileName, index=False)
     print('Results saved successfully')
 endTime = time.time()
 print(f'Total Time Taken To Run Script: {endTime - startTime}')
