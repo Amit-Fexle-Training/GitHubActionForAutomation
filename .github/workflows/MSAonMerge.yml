@@ -50,7 +50,7 @@ jobs:
             echo "RunScript_found=$var" >> $GITHUB_ENV
           fi
 
-      - name: List Files with Changes
+      - name: Get Changes From PR
         if: steps.RunScript_check.outputs.RunScript_found == 'true'
         id: list-files
         run: |

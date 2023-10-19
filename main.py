@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import os
 from simple_salesforce import Salesforce, format_soql
 from pprint import pprint
@@ -17,10 +11,6 @@ import json
 import sys
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-
-# In[2]:
-
-
 config = configparser.ConfigParser()
 
 # Read options from the CSV file into a DataFrame
@@ -31,10 +21,6 @@ options = options_df.set_index('orgName')['configFileName'].to_dict()
 
 listOfChoices = []
 releaseName  = sys.argv[1] #input('Please enter the release Name: ')
-
-
-# In[3]:
-
 
 while True:
     print("Select an option:")
@@ -59,10 +45,6 @@ while True:
         print("Invalid choice. Please try again.")
         break
 
-
-# In[4]:
-
-
 fileName = options[selected_option]+'.ini'
 
 credsPath = 'creds/'
@@ -75,10 +57,6 @@ if os.path.isfile(fileName):
     config.read(fileName)
 else:
     print(f"The file '{fileName}' does not exist in the '{credsPath}' directory.")
-
-
-# In[5]:
-
 
 def get_story_tracker(folder_path, options_df):
     config_list = []
@@ -115,10 +93,6 @@ def get_story_tracker(folder_path, options_df):
         config_list.append(configDict)
     return pd.DataFrame(config_list)
 
-
-# In[6]:
-
-
 folder_path = 'manual-steps-automation/scripts/apex'
 configDF = get_story_tracker(folder_path, options_df) #pd.read_csv("manual-steps-automation/Story Tracker.csv")
 configDF = configDF.sort_values(by='Script File Name', ascending=True)
@@ -132,10 +106,6 @@ columnsToKeep.append(errorColumn)
 resultDf[successColumn] = None
 resultDf[errorColumn] = None
 configDF[errorColumn] = False 
-
-
-# In[8]:
-
 
 #secondary_path_folder_name = 'scripts\apex'
 def read_files_in_folder(apex_class_with_changes, folder_path, configDF):
@@ -221,9 +191,6 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF):
     return resultDf
 
 
-# In[9]:
-
-
 # Call the function to read files in the folder
 startTime = time.time()
 
@@ -258,6 +225,7 @@ if not os.path.exists(results_folder_path):
         print(f"Failed to create results folder at '{results_folder_path}'")
         
 if os.path.exists(results_folder_path):
+
     csvFileName = f'{results_folder_path}/'+selected_option+'Success Result.csv'
     df_success.to_csv(csvFileName)
     
@@ -266,10 +234,4 @@ if os.path.exists(results_folder_path):
     print('Results saved successfully')
 endTime = time.time()
 print(f'Total Time Taken To Run Script: {endTime - startTime}')
-
-
-# In[ ]:
-
-
-
 
