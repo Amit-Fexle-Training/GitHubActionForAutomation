@@ -1,3 +1,5 @@
+//UserName: BillingStatementUser
+//Environment: Prod, Twgqa2d, Qa1e
 Id insuranceRecordTypeId = RecordTypeDAO.getRecordTypeId(
             (UtilityDAO.getObjectRecordTypeNameByClient('WELLS')).get('Insurance_Detail__c').get('Insurancedetail'), 'Insurance_Detail__c');
 

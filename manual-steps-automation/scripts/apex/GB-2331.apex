@@ -1,3 +1,5 @@
+//UserName: SystemIntegrationUser
+//Environment: Qa1e,Prod, Twgqa2d
 List<Skill> listOfSkill = [SELECT Id FROM Skill WHERE MasterLabel = 'AMEX'];
 List<ServiceResourceSkill> serviceResourceSkillToBeInsert = new List<ServiceResourceSkill>();
 List<ServiceResource> serviceResourceListToActivate = new List<ServiceResource>();

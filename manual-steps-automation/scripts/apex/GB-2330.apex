@@ -1,3 +1,5 @@
+//UserName: SystemIntegrationUser
+//Environment: Qa1e,Prod, Twgqa2d
 List<Letter_Disclosure__c> discList = [SELECT Id, State__c, State_Complaint_Language__c from Letter_Disclosure__c  where State__c in ('NE','WA') AND RecordType.DeveloperName = 'Specialty_AMEX'];
 for(Letter_Disclosure__c thisLetter : discList)
 {
