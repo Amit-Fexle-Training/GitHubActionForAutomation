@@ -62,7 +62,7 @@ jobs:
       - name: Check for Results folder
         id: Folder_check
         run: |
-          if [ -d "$GITHUB_WORKSPACE/Results" ]; then; then
+          if [ -d "$GITHUB_WORKSPACE/Results" ]; then
             var="true"
             echo "Folder_found=$var" >>$GITHUB_OUTPUT
           else
