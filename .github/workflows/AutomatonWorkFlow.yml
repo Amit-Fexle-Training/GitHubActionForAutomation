@@ -31,7 +31,6 @@ jobs:
           echo "changed_files=$changed_files" >> $GITHUB_OUTPUT
 
       - name: Set up Python
-        if: steps.RunScript_check.outputs.RunScript_found == 'true'
         uses: actions/setup-python@v3
         with:
           python-version: 3.11
@@ -60,10 +59,21 @@ jobs:
         env:
           PAT: ${{ secrets.REPO_PAT_SECRET }}
     
-      - name: Commit and push changes
+      - name: Check for Results folder
+        id: Folder_check
         run: |
-          run: |
-            releaseName="Results/"
-            git add "$releaseName"
-            git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
-            git push
+          if [ -d "Results" ]; then
+            var="true"
+            echo "Folder_found=$var" >>$GITHUB_OUTPUT
+          else
+            var="false"
+            echo "Folder_found=$var" >>$GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.Folder_check.outputs.Folder_found == 'true'
+        run: |
+          releaseName="Results/"
+          git add "$releaseName"
+          git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
+          git push
