@@ -98,3 +98,7 @@ jobs:
             git push
           else
 
+      - name: Skip workflow on PR not merged
+        if: steps.pr_merge_status.outputs.merge_status == 'false'
+        run: |
+          echo "This workflow was skipped because the PR was not merged."
