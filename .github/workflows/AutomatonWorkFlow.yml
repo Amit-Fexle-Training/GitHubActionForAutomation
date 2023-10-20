@@ -62,12 +62,12 @@ jobs:
       - name: Check for Results folder
         id: Folder_check
         run: |
-          if [ -d "Results" ]; then
+          if [ -d "Results/" ]; then
             var="true"
-            echo "Folder_found=$var" >> $GITHUB_ENV
+            echo "Folder_found=$var" >> $GITHUB_OUTPUT
           else
             var="false"
-            echo "Folder_found=$var" >> $GITHUB_ENV
+            echo "Folder_found=$var" >> $GITHUB_OUTPUT
           fi
 
       - name: Commit and push changes
