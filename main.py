@@ -13,9 +13,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def initial_setup():
     releaseDetails = configparser.ConfigParser()
-    releaseDetails.read('Releasedetails.ini')
-    releaseName = releaseDetails.get('Release Details', 'Release_Name')
-    orgNumber = releaseDetails.get('Release Details', 'Org_Number')
+    releaseDetails.read('ReleaseDetails.ini')
+    releaseName = releaseDetails.get('ReleaseDetails', 'Release_Name')
+    orgNumber = releaseDetails.get('ReleaseDetails', 'Org_Number')
     
     config = configparser.ConfigParser()
 
