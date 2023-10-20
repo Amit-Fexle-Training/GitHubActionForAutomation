@@ -62,18 +62,22 @@ jobs:
       - name: Check for Results folder
         id: Folder_check
         run: |
-          if [ -d "$GITHUB_WORKSPACE/Results" ]; then
+          if [ -d "Results" ]; then
             var="true"
-            echo "Folder_found=$var" >>$GITHUB_OUTPUT
+            echo "Folder_found=$var" >> $GITHUB_ENV
           else
             var="false"
-            echo "Folder_found=$var" >>$GITHUB_OUTPUT
+            echo "Folder_found=$var" >> $GITHUB_ENV
           fi
 
       - name: Commit and push changes
         if: steps.Folder_check.outputs.Folder_found == 'true'
         run: |
           releaseName="Results/"
-          git add "$releaseName"
-          git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
-          git push
+          if git status --porcelain "$releaseName" | grep .; then
+            git add "$releaseName"
+            git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
+            git push
+          else
+            echo "No changes to commit, working tree clean."
+          fi
