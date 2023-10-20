@@ -1,0 +1,69 @@
+name: Manual Step Automation
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  manualStepAutomation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Get Changes From PR
+        id: list-files
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/files"
+          CHANGED_FILES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq -r '.[].filename')
+
+          # Convert the list to a newline-delimited string
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          
+          echo "Files with changes in PR #${PR_NUMBER}:"
+          echo "$CHANGED_FILES"
+          changed_files="${CHANGED_FILES}"
+          echo "changed_files=$changed_files" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        if: steps.RunScript_check.outputs.RunScript_found == 'true'
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.11
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+
+      - name: Run Python script
+        run: |
+          python main.py ${{ steps.list-files.outputs.changed_files }}
+
+      - name: Configure Git with PAT
+        run: |
+          git config --global user.email "${{ vars.USER_EMAIL }}"
+          git config --global user.name "${{vars.USER_NAME }}"
+        env:
+          PAT: ${{ secrets.REPO_PAT_SECRET }}
+    
+      - name: Commit and push changes
+        run: |
+          run: |
+            releaseName="Results/"
+            git add "$releaseName"
+            git commit -m "Add Manual Step Automation Script generated folder for $releaseName"
+            git push
