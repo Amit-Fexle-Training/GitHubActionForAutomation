@@ -49,7 +49,7 @@ jobs:
           PR_NUMBER="${{ github.event.pull_request.number }}"
           SOURCE_BRANCH=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -X GET "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}" | jq -r '.base.ref')
+            -X GET "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}" | jq -r '.head.ref')
           echo "Source Branch: $SOURCE_BRANCH"
           echo "source_branch=$SOURCE_BRANCH" >> $GITHUB_OUTPUT
 
