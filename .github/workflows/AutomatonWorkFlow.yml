@@ -42,6 +42,17 @@ jobs:
           changed_files="${CHANGED_FILES}"
           echo "changed_files=$changed_files" >> $GITHUB_OUTPUT
 
+      - name: Get Source Branch Name
+        id: source-branch
+        if: steps.pr_merge_status.outputs.merge_status == 'true'
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          SOURCE_BRANCH=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -X GET "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}" | jq -r '.base.ref')
+          echo "Source Branch: $SOURCE_BRANCH"
+          echo "source_branch=$SOURCE_BRANCH" >> $GITHUB_OUTPUT
+
       - name: Set up Python
         if: steps.pr_merge_status.outputs.merge_status == 'true'
         uses: actions/setup-python@v3
@@ -66,7 +77,7 @@ jobs:
       - name: Run Python script
         if: steps.pr_merge_status.outputs.merge_status == 'true'
         run: |
-          python main.py ${{ steps.list-files.outputs.changed_files }}
+          python main.py ${{ steps.list-files.outputs.changed_files }} ${{ steps.source-branch.outputs.source_branch }}
 
       - name: Configure Git with PAT
         if: steps.pr_merge_status.outputs.merge_status == 'true'
