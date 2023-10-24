@@ -77,7 +77,7 @@ jobs:
       - name: Run Python script
         if: steps.pr_merge_status.outputs.merge_status == 'true'
         run: |
-          python main.py ${{ steps.list-files.outputs.changed_files }} ${{ steps.source-branch.outputs.source_branch }}
+          python main.py "${{ steps.list-files.outputs.changed_files }}" "${{ steps.source-branch.outputs.source_branch }}"
 
       - name: Configure Git with PAT
         if: steps.pr_merge_status.outputs.merge_status == 'true'
