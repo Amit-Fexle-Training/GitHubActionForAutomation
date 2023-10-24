@@ -192,9 +192,12 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF, selecte
 # Call the function to read files in the folder
 startTime = time.time()
 
-changes_from_PR = []
-for arg in sys.argv[1:]:
-    changes_from_PR.append(arg)
+changes_from_PR = sys.argv[1].split()
+for r in changes_from_PR:
+    print(r)
+print('Sourch Branch Name : ',sys.argv[2])
+# for arg in sys.argv[1:]:
+#     changes_from_PR.append(arg)
 
 #result_list = [file.split('/')[-1] for file in chnages_from_PR if file.startswith('manual-steps-automation/scripts/apex/') and file.endswith('.apex')]
 apex_class_with_changes = [file.split('/')[-1] for file in changes_from_PR if file.endswith('.apex')]
