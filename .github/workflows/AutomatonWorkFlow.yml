@@ -35,7 +35,7 @@ jobs:
           CHANGED_FILES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq -r '.[].filename')
 
           # Convert the list to a newline-delimited string
-          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ',')
           
           echo "Files with changes in PR #${PR_NUMBER}:"
           echo "$CHANGED_FILES"
