@@ -191,7 +191,7 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF, selecte
 changes_from_PR = sys.argv[1].split(',')
 for r in changes_from_PR:
     print('change path : ',r)
-print('Sourch Branch Name : ',sys.argv[2],split(',')[0])
+print('Sourch Branch Name : ', sys.argv[2].split(',')[0])
 # for arg in sys.argv[1:]:
 #     changes_from_PR.append(arg)
 
