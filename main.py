@@ -9,6 +9,7 @@ import pandas as pd
 import copy
 import json
 import sys
+import argparse
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def initial_setup():
@@ -192,10 +193,20 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF, selecte
 # Call the function to read files in the folder
 startTime = time.time()
 
-changes_from_PR = sys.argv[1].split()
+# Create an argument parser
+parser = argparse.ArgumentParser()
+
+# Add command-line arguments
+parser.add_argument('file_paths', nargs='+')
+parser.add_argument('source_branch')
+
+# Parse the command-line arguments
+args = parser.parse_args()
+
+changes_from_PR = args.file_paths #sys.argv[1].split()
 for r in changes_from_PR:
-    print(r)
-print('Sourch Branch Name : ',sys.argv[2])
+    print('change path : ',r)
+print('Sourch Branch Name : ',args.source_branch)
 # for arg in sys.argv[1:]:
 #     changes_from_PR.append(arg)
 
