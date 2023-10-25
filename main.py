@@ -14,7 +14,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 def initial_setup():
     releaseDetails = configparser.ConfigParser()
     releaseDetails.read('ReleaseDetails.ini')
-    releaseName = releaseDetails.get('ReleaseDetails', 'Release_Name')
+    #releaseName = releaseDetails.get('ReleaseDetails', 'Release_Name')
     orgNumber = releaseDetails.get('ReleaseDetails', 'Org_Number')
     
     config = configparser.ConfigParser()
@@ -26,7 +26,7 @@ def initial_setup():
     options = options_df.set_index('orgName')['configFileName'].to_dict()
 
     listOfChoices = []
-    releaseName  = releaseName #input('Please enter the release Name: ') #sys.argv[1]
+    #releaseName  = releaseName #input('Please enter the release Name: ') #sys.argv[1]
     
     while True:
         print("Select an option:")
@@ -36,7 +36,7 @@ def initial_setup():
 
         print("0. Exit")
 
-        choice = orgNumber 
+        choice = orgNumber #input("Enter your choice (0-{max_choice}): ".format(max_choice=len(options))) #sys.argv[2]
 
         if choice == '0':
             print("Exiting...")
@@ -76,9 +76,10 @@ def initial_setup():
     columnsToKeep.append(errorColumn)
     resultDf[successColumn] = None
     resultDf[errorColumn] = None
-    configDF[errorColumn] = False 
+    configDF[errorColumn] = False
+    configDF['ParentScriptName'] = None 
     
-    return folder_path, configDF, selected_option, resultDf, errorColumn, successColumn, columnsToKeep, releaseName, config
+    return folder_path, configDF, selected_option, resultDf, errorColumn, successColumn, columnsToKeep, config
 
 def get_story_tracker(folder_path, options_df):
     config_list = []
@@ -128,6 +129,7 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF, selecte
     
     # List all files in the directory and sort them by name
     file_names = sorted(os.listdir(folder_path))
+    
     # Loop over all files in the folder
     for scriptFileName in file_names:
         file_name_without_extension = os.path.splitext(scriptFileName)[0]
@@ -170,32 +172,30 @@ def read_files_in_folder(apex_class_with_changes, folder_path, configDF, selecte
                                 resultDf.at[index, errorColumn] = 'Script failed to execute'
                             resultDf.at[index, successColumn] = result['success']
                             print(f"Script not executed due to {result['exceptionMessage']}")
-                            configDF.loc[configDF['Script File Name'].str.startswith(file_name_without_extension.split('_')[0]), 'error'] = True 
-                            #failed_script_name = scriptFileName 
-                            
-
+                            configDF.loc[(configDF['Script File Name'].str.startswith(file_name_without_extension.split('_')[0])) & (configDF['error'] == False), ['error', 'ParentScriptName']] = [True, scriptFileName]
+                             
                         records = pd.DataFrame(result,index=[0])
-
-            else: 
+            else:
                 print(f'executing File: {scriptFileName}')
-                resultDf.at[index, errorColumn] = f'Script not Executed'
-                resultDf.at[index, successColumn] = False
-                print(f'Script not Executed')
+                failedScriptName = configDF.loc[index, 'ParentScriptName']
+                if failedScriptName:
+                    resultDf.at[index, errorColumn] = f'Script not Executed Due To {failedScriptName} Fails to Execute'
+                    resultDf.at[index, successColumn] = False
+                    print(f'Script not Executed Due To {failedScriptName} Fails to Execute')
+                else:
+                    resultDf.at[index, errorColumn] = f'Script not Executed'
+                    resultDf.at[index, successColumn] = False
+                    print(f'Script not Executed')
                 
     print('Execution Completed')
     return resultDf
 
-
-# In[ ]:
+# Call the function to read files in the folder
+startTime = time.time()
 
 changes_from_PR = sys.argv[1].split(',')
-for r in changes_from_PR:
-    print('change path : ',r)
-print('Sourch Branch Name : ', sys.argv[2].split(',')[0])
-# for arg in sys.argv[1:]:
-#     changes_from_PR.append(arg)
+featureBranchName = sys.argv[2]
 
-#result_list = [file.split('/')[-1] for file in chnages_from_PR if file.startswith('manual-steps-automation/scripts/apex/') and file.endswith('.apex')]
 apex_class_with_changes = [file.split('/')[-1] for file in changes_from_PR if file.endswith('.apex')]
 
 if apex_class_with_changes:
@@ -209,16 +209,15 @@ if apex_class_with_changes:
 #     errorColumn = initialSetup[4]
 #     successColumn = initialSetup[5]
 #     columnsToKeep = initialSetup[6]
-#     releaseName = initialSetup[7]
-#     config = initialSetup[8]
+#     config = initialSetup[7]
     
-    resultDf = read_files_in_folder(apex_class_with_changes, initialSetup[0], initialSetup[1], initialSetup[2], initialSetup[3], initialSetup[4], initialSetup[5], initialSetup[6], initialSetup[8]) 
+    resultDf = read_files_in_folder(apex_class_with_changes, initialSetup[0], initialSetup[1], initialSetup[2], initialSetup[3], initialSetup[4], initialSetup[5], initialSetup[6], initialSetup[7]) 
 
     resultDf = resultDf[initialSetup[6]]
 
     # Split the dataframe into two based on the 'successs' column
     df_success = resultDf[resultDf['successs'] == True]
-    df_failure = resultDf[resultDf['successs'] == False]
+    df_failure = resultDf[(resultDf['successs'] == False) & (resultDf['error'] != 'Script not Executed')]
 
     #Save in CSV
     results_path = 'Results/'
@@ -231,7 +230,7 @@ if apex_class_with_changes:
             print(f"Failed to create results folder at '{results_path}'")
 
     current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    results_folder_path = results_path + initialSetup[7] +'_results ' + current_datetime +'/'
+    results_folder_path = results_path + featureBranchName +' Release_Results ' + current_datetime +'/'
 
     # Check if the results folder exists
     if not os.path.exists(results_folder_path):
